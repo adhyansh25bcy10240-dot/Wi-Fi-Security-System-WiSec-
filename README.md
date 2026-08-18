@@ -1,10 +1,10 @@
-# 🛡️ WiFi Network Security & Device Monitoring System
+#  WiFi Network Security & Device Monitoring System
 
 A self-contained home network visibility and security tool designed to monitor local network devices. It acts as a friendlier, smarter version of a router's admin page by translating technical network data into a simple, visual dashboard that a non-technical person can understand at a glance.
 
 ---
 
-# 📌 Problem Statement
+#  Problem Statement
 
 Most home WiFi routers give very limited, technical, and hard-to-read information about who is actually connected to the network.
 
@@ -19,7 +19,7 @@ This project aims to build a **simple visual dashboard** that shows all this inf
 
 ---
 
-# 🎯 Project Goal
+# Project Goal
 
 To build a **self-contained network monitoring tool** for a home/local WiFi network (`192.168.x.x` range) that:
 
@@ -32,7 +32,7 @@ To build a **self-contained network monitoring tool** for a home/local WiFi netw
 
 ---
 
-# 💡 Why This Project (Learning Value)
+#  Why This Project (Learning Value)
 
 This project combines two technical skill areas:
 
@@ -44,45 +44,57 @@ This project combines two technical skill areas:
 The idea is that **C++ performs the low-level network work**, while **Python cleans, organizes, stores, and presents that data** in a simple dashboard. This mirrors how many real-world security tools combine a fast low-level core with a flexible scripting/application layer.
 
 ---
+#  Key Features
 
-# 🔍 How It Works (Simple Explanation)
+- **Local Device Discovery** — Detect devices on the local subnet using ARP.
+- **IP & MAC Identification** — Collect network addresses for discovered devices.
+- **Vendor Identification** — Identify manufacturers using an offline IEEE OUI database.
+- **Hostname Resolution** — Attempt to determine device names.
+- **Device Classification** — Estimate whether a device is a phone, laptop, IoT device, or unknown.
+- **Connection Tracking** — Record when devices connect and disconnect.
+- **Device History** — Store historical device information locally.
+- **Visual Dashboard** — Present network information in a format understandable to non-technical users.
+- **Future Security Monitoring** — Detect previously unknown devices and other suspicious activity.
+The project uses a hybrid architecture combining a low-level C++ network scanner with a Python-based processing and visualization layer.
 
-Every device connected to a WiFi router has a network identity that can be discovered using **ARP (Address Resolution Protocol)**.
-
-The basic workflow is:
+#  System Architecture
 
 ```text
-Your Laptop / Scanner
-        |
-        | "Is anyone using this IP?"
-        | ARP request
-        v
-Home WiFi Network: 192.168.1.0/24
-        |
-        | ARP replies from active devices
-        v
-Collect:
-  - IP Address
-  - MAC Address
+Local WiFi Network
         |
         v
-Enrich the data:
-  - Vendor lookup
-  - Hostname resolution
-  - Device-type guess
++----------------------+
+|   C++ ARP Scanner    |
+|  Raw Socket / ARP    |
++----------------------+
+        |
+        | IP + MAC
+        v
++----------------------+
+| Python Processing    |
++----------------------+
+        |
+        +--> Vendor Lookup
+        +--> Hostname Resolution
+        +--> Device Classification
         |
         v
-Store and display
++----------------------+
+|   SQLite Database    |
+| Device History       |
++----------------------+
         |
         v
-Simple local dashboard
-```
++----------------------+
+| Flask Web Dashboard  |
+| HTML + JavaScript    |
++----------------------+
+        |
+        v
+      User
 
-A device that responds to an ARP request is treated as an active device on the local network.
 
----
-
-# 🎯 Expected Outcome
+#  Expected Outcome
 
 A working local dashboard where a completely non-technical person (for example, a parent checking their home WiFi) can open a webpage and instantly see:
 
@@ -128,7 +140,7 @@ The project will be built incrementally in working milestones so that there is a
 
 ---
 
-# 🧰 Technology Stack
+#  Technology Stack
 
 | Component | Technology | Purpose |
 | :--- | :--- | :--- |
@@ -147,69 +159,8 @@ The project will be built incrementally in working milestones so that there is a
 
 ---
 
-# 🏗️ System Architecture & Technical Concept
 
-This project utilizes a **hybrid dual-language architecture** that balances high-performance low-level network probing with high-level data management and user visualization.
-
-This mirrors real-world security tools, which combine a fast, low-level core with a flexible scripting layer on top.
-
----
-
-## 1. Language Stack & Core Responsibilities
-
-| Component | Operating Level | Primary Role | Key Features & Libraries |
-| :--- | :--- | :--- | :--- |
-| **C++ Engine** | Layer 2 (Data Link) | Low-Level Network Access | Raw socket programming (`AF_PACKET`), ARP protocol, byte-level frame construction, socket binding, high-speed ARP broadcasting |
-| **Python Engine** | Application Layer | Data Processing & Management | Ingesting and parsing raw data, IEEE OUI vendor lookup, hostname resolution, SQLite storage, Flask web UI |
-
-### C++ Engine — Low-Level Systems
-
-The C++ engine interacts directly with the Network Interface Card (NIC) through Layer 2 raw sockets (`AF_PACKET`).
-
-It is responsible for:
-
-- Raw packet handling.
-- Constructing Ethernet frames at the byte level.
-- Binding sockets to the selected network interface.
-- Rapidly transmitting ARP requests across the local subnet (`.1` to `.254`).
-
-### Python Engine — Data Processing
-
-The Python engine ingests the parsed output from the C++ binary.
-
-It is responsible for:
-
-- Data normalization.
-- Offline IEEE OUI vendor lookups.
-- Hostname resolution.
-- SQLite database storage.
-- Serving the interactive Flask web dashboard.
-
----
-
-## 2. OSI Layer Mechanics (Layer 2 & Layer 3 Integration)
-
-The scanner operates at the boundary between **Layer 2 (Data Link)** and **Layer 3 (Network)** of the OSI model.
-
-### Layer 3 — IP Addressing
-
-The scanner iterates through the logical IPv4 address pool:
-
-```text
-192.168.x.1 → 192.168.x.254
-```
-
-### Layer 2 — Ethernet Framing
-
-Because delivery over a local Ethernet/WiFi network relies on physical MAC addresses, each ARP query is wrapped inside a raw Layer 2 Ethernet frame addressed to the broadcast MAC:
-
-```text
-FF:FF:FF:FF:FF:FF
-```
-
----
-
-## 3. Protocol Workflow — ARP
+##  Protocol Workflow — ARP
 
 Every device connected to a local network can respond to ARP requests.
 
@@ -240,40 +191,6 @@ The scanner sends an ARP request for possible IP addresses and listens for repli
           v
 [ Flask Dashboard ]
 ```
-
----
-
-# 🔄 Complete Data Flow
-
-```text
-Local WiFi Network
-        |
-        v
-C++ ARP Scanner
-        |
-        | Raw device information
-        v
-Python Processing Layer
-        |
-        +--> IP / MAC normalization
-        +--> Vendor identification
-        +--> Hostname resolution
-        +--> Device classification
-        |
-        v
-SQLite Database
-        |
-        +--> Connection history
-        +--> Connect/disconnect times
-        |
-        v
-Flask + HTML/JS Dashboard
-        |
-        v
-Non-technical user
-```
-
----
 
 
 # ⚙️ Dependencies & System Requirements
@@ -392,7 +309,7 @@ Identify the active interface (for example, `eth0`) and make sure the C++ scanne
 
 ---
 
-# 🧩 Troubleshooting
+#  Troubleshooting
 
 ### `Permission denied` when creating a raw socket
 
@@ -434,7 +351,7 @@ WSL2 normally uses a virtualized network adapter. For full LAN visibility, consi
 
 ---
 
-# 🔐 Scope & Ethics
+# Scope & Ethics
 
 This project is designed to run **only on a network the user owns or administers**, such as their own home WiFi network.
 
