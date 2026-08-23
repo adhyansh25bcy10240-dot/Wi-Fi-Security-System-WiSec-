@@ -16,16 +16,20 @@
 #include <iostream>
 #include <cstring>
 #include <cstdio>
+#include <vector>
+#include <string>
+// Above includes help in handling basic input/output, strings, dynamic arrays, and standard C-style memory/string operations
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <net/if.h>
-#include <net/ethernet.h>
-#include <netpacket/packet.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#include <vector>
-#include <string>
+// The above are for socket creation and device control configuration
+#include <net/if.h>
+#include <net/ethernet.h>
+#include <netpacket/packet.h>
+//The above help caputring and Sending Frames at layer-2(Data Link layer)
+
 
 // ARP header structure (as defined by the ARP protocol spec)
 struct arp_header {
@@ -34,13 +38,13 @@ struct arp_header {
     uint8_t  hlen;        // Hardware address length (6 for MAC)
     uint8_t  plen;        // Protocol address length (4 for IPv4)
     uint16_t opcode;      // 1 = request, 2 = reply
-    uint8_t  sender_mac[6];
+    uint8_t  sender_mac[6]; // Sender mark address
     uint8_t  sender_ip[4];
     uint8_t  target_mac[6];
     uint8_t  target_ip[4];
 };
 
-// Full Ethernet frame containing an ARP packet
+// A C structure for a full Ethernet frame carrying an Address Resolution Protocol (ARP) packet combines a 14-byte Ethernet header (struct ether_header) and a 28-byte ARP payload (struct arp_header), encapsulating Layer 2 framing and Layer 2/3 address mapping data directly.
 struct arp_packet {
     struct ether_header eth_hdr;
     struct arp_header arp_hdr;
