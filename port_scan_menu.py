@@ -3,6 +3,53 @@ import socket
 import ssl
 import subprocess
 import concurrent.futures
+import os
+import json
+from datetime import datetime
+
+def save_scan_logs(results: list[dict], log_dir: str = "logs"):
+    """
+    Saves port scan results in both structured human-readable text logs 
+    and machine-readable JSON history logs.
+    """
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    timestamp_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    now_readable = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    txt_log_path = os.path.join(log_dir, "port_scan.log")
+    json_log_path = os.path.join(log_dir, f"scan_{timestamp_str}.json")
+
+    # 1. Append formatted entries to the cumulative text log file
+    with open(txt_log_path, "a") as txt_file:
+        txt_file.write(f"\n=== SCAN RUN AT {now_readable} ===\n")
+        for host in results:
+            ip = host["ip"]
+            mac = host.get("mac", "UNKNOWN")
+            if host.get("open_ports"):
+                for p in host["open_ports"]:
+                    log_entry = (
+                        f"[{now_readable}] [OPEN] Host: {ip:<15} | MAC: {mac} | "
+                        f"Port: {p['port']}/tcp | Service: {p['service']} | Banner: {p['banner']}\n"
+                    )
+                    txt_file.write(log_entry)
+            else:
+                txt_file.write(f"[{now_readable}] [CLEAN] Host: {ip:<15} | MAC: {mac} | No open ports\n")
+
+    # 2. Save a structured JSON snapshot for programmatic lookups / dashboards
+    log_data = {
+        "timestamp": now_readable,
+        "scanned_hosts": len(results),
+        "results": results
+    }
+    with open(json_log_path, "w") as json_file:
+        json.dump(log_data, json_file, indent=2)
+
+    print("\n" + "=" * 60)
+    print(f"[+] Scan logs generated successfully:")
+    print(f"    - Append Log : {txt_log_path}")
+    print(f"    - JSON Record: {json_log_path}")
 
 def get_active_network_info():
     """Dynamically detects active default network interface and C++ subnet prefix."""
@@ -177,3 +224,16 @@ if __name__ == "__main__":
                 print(f"      Banner: {p['banner']}")
         else:
             print("  [-] No open ports found.")
+
+    # ... after printing terminal results ...
+    for host in results:
+        print(f"\nHost: {host['ip']} | MAC: {host['mac']}")
+        if host.get("open_ports"):
+            for p in host["open_ports"]:
+                print(f"  [+] Port {p['port']}/tcp OPEN | Service: {p['service']}")
+                print(f"      Banner: {p['banner']}")
+        else:
+            print("  [-] No open ports found.")
+
+    # Save log files automatically
+    save_scan_logs(results)
