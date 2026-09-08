@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>WiSec Network Monitor</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 9px 14px;
+            cursor: pointer;
+        }
+
+        .rescan-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-weight: bold;
+        }
+
+        .dashboard {
+            background: white;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .dashboard img {
+            width: 100%;
+            max-width: 1400px;
+            height: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        th, td {
+            border: 1px solid #999;
+            padding: 9px;
+            text-align: left;
+        }
+
+        .online {
+            color: green;
+            font-weight: bold;
+        }
+
+        .offline {
+            color: red;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>WiSec Live Dashboard</h1>
+
+
+    <!-- ===================== CONTROLS ===================== -->
+
+    <div class="controls">
+
+        <form action="/rescan" method="POST">
+
+            <button
+                type="submit"
+                class="rescan-button"
+            >
+                🔄 Force Network Rescan
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ===================== VISUALIZATION ===================== -->
+
+    {% if dashboard_image %}
+
+    <div class="dashboard">
+
+        <h2>Network Analytics</h2>
+
+        <img
+            src="{{ url_for('static', filename=dashboard_image) }}"
+            alt="WiSec Network Visualization"
+        >
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ===================== DEVICE TABLE ===================== -->
+
+    <h2>Connected Devices</h2>
+
+    <table>
+
+        <tr>
+
+            <th>Status</th>
+            <th>IP Address</th>
+            <th>MAC Address</th>
+            <th>Vendor</th>
+            <th>Type</th>
+            <th>Actions</th>
+
+        </tr>
+
+
+        {% for device in devices %}
+
+        <tr>
+
+            <td>
+
+                {% if device['is_online'] %}
+
+                    <span class="online">
+                        🟢 Online
+                    </span>
+
+                {% else %}
+
+                    <span class="offline">
+                        🔴 Offline
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+
+            <td>
+                {{ device['ip'] }}
+            </td>
+
+
+            <td>
+                {{ device['mac'] }}
+            </td>
+
+
+            <td>
+                {{ device['vendor'] }}
+            </td>
+
+
+            <td>
+                {{ device['device_type'] }}
+            </td>
+
+
+            <td>
+
+                <form
+                    action="/portscan"
+                    method="POST"
+                    style="margin: 0;"
+                >
+
+                    <input
+                        type="hidden"
+                        name="ip"
+                        value="{{ device['ip'] }}"
+                    >
+
+                    <button type="submit">
+                        🔍 Scan Ports
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</body>
+
+</html>
