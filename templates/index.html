@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WiSec Network Monitor</title>
+</head>
+<body>
+    <h1>WiSec Live Dashboard</h1>
+    
+    <!-- Global Rescan Button -->
+    <form action="/rescan" method="POST" style="margin-bottom: 20px;">
+        <button type="submit" style="padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+            🔄 Force Network Rescan
+        </button>
+    </form>
+
+    <table border="1" cellpadding="8" style="border-collapse: collapse;">
+        <tr style="background-color: #f2f2f2;">
+            <th>Status</th>
+            <th>IP Address</th>
+            <th>MAC Address</th>
+            <th>Vendor</th>
+            <th>Type</th>
+            <th>Actions</th> <!-- New Actions Column -->
+        </tr>
+        
+        {% for device in devices %}
+        <tr>
+            <td>{{ '🟢 Online' if device['is_online'] else '🔴 Offline' }}</td>
+            <td>{{ device['ip'] }}</td>
+            <td>{{ device['mac'] }}</td>
+            <td>{{ device['vendor'] }}</td>
+            <td>{{ device['device_type'] }}</td>
+            
+            <!-- Per-Device Port Scan Button -->
+            <td>
+                <form action="/portscan" method="POST" style="margin: 0;">
+                    <!-- Hidden input passes the specific IP to the backend -->
+                    <input type="hidden" name="ip" value="{{ device['ip'] }}">
+                    <button type="submit" style="cursor: pointer;">🔍 Scan Ports</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
