@@ -1,0 +1,950 @@
+{
+  "timestamp": "2026-09-07 16:24:25",
+  "scanned_hosts": 94,
+  "results": [
+    {
+      "ip": "192.168.1.2",
+      "mac": "f8:20:97:6f:82:ec",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 443,
+          "service": "https",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.3",
+      "mac": "f8:20:97:1d:32:3e",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.1",
+      "mac": "68:ed:a4:80:a6:35",
+      "open_ports": [
+        {
+          "port": 53,
+          "service": "domain",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 80,
+          "service": "domain",
+          "banner": "HTTP/1.1 503 Service Unavailable"
+        },
+        {
+          "port": 443,
+          "service": "https",
+          "banner": "HTTP/1.1 503 Service Unavailable"
+        },
+        {
+          "port": 8080,
+          "service": "http-alt",
+          "banner": "HTTP/1.1 400 Bad Request"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.4",
+      "mac": "f8:20:97:53:58:e6",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.5",
+      "mac": "f8:20:97:1d:34:e3",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.6",
+      "mac": "f8:20:97:1d:34:d7",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.7",
+      "mac": "f8:20:97:1d:34:e7",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.8",
+      "mac": "f8:20:97:1d:32:ea",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.9",
+      "mac": "f8:20:97:53:58:f7",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.10",
+      "mac": "f8:20:97:1d:32:ed",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.11",
+      "mac": "f8:20:97:53:58:d8",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.12",
+      "mac": "f8:20:97:1d:32:2e",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.13",
+      "mac": "f8:20:97:53:58:da",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.14",
+      "mac": "f8:20:97:1d:32:e1",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.15",
+      "mac": "f8:20:97:1d:34:d9",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.16",
+      "mac": "f8:20:97:1d:32:e8",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.17",
+      "mac": "f8:20:97:6f:83:af",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.18",
+      "mac": "f8:20:97:1d:34:d1",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.20",
+      "mac": "f8:20:97:1d:34:e8",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 443,
+          "service": "https",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.22",
+      "mac": "f8:20:97:6f:83:73",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.24",
+      "mac": "f8:20:97:1d:34:df",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.25",
+      "mac": "f8:20:97:1d:34:cf",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.26",
+      "mac": "f8:20:97:1d:34:dd",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.28",
+      "mac": "f8:20:97:53:59:33",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.30",
+      "mac": "f8:20:97:53:59:05",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.31",
+      "mac": "f8:20:97:53:58:fc",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.36",
+      "mac": "f8:20:97:53:59:7a",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.37",
+      "mac": "f8:20:97:53:58:f1",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.38",
+      "mac": "f8:20:97:1d:34:ea",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.39",
+      "mac": "f8:20:97:53:59:2c",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.40",
+      "mac": "f8:20:97:1d:31:f6",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.42",
+      "mac": "f8:20:97:53:58:eb",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.19",
+      "mac": "f8:20:97:53:b1:bf",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.52",
+      "mac": "f8:20:97:79:d5:a1",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "tftp\u0000",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 443,
+          "service": "https",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.106",
+      "mac": "d8:43:ae:06:cf:15",
+      "open_ports": [
+        {
+          "port": 135,
+          "service": "epmap",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 139,
+          "service": "netbios-ssn",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 445,
+          "service": "microsoft-ds",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.112",
+      "mac": "80:9f:e4:26:27:70",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.114",
+      "mac": "80:9f:e4:26:24:c0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.113",
+      "mac": "80:9f:e4:26:26:d0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.115",
+      "mac": "80:9f:e4:26:25:70",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.116",
+      "mac": "80:9f:e4:26:27:50",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.117",
+      "mac": "80:9f:e4:26:25:c0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.118",
+      "mac": "80:9f:e4:26:26:e0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.119",
+      "mac": "80:9f:e4:26:24:a0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.120",
+      "mac": "80:9f:e4:26:24:70",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.121",
+      "mac": "80:9f:e4:26:24:60",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.122",
+      "mac": "80:9f:e4:26:24:20",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.125",
+      "mac": "80:9f:e4:26:24:40",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.126",
+      "mac": "80:9f:e4:26:25:a0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.127",
+      "mac": "80:9f:e4:26:27:a0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.128",
+      "mac": "80:9f:e4:26:26:20",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.129",
+      "mac": "80:9f:e4:26:24:b0",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.131",
+      "mac": "80:9f:e4:26:25:00",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.132",
+      "mac": "80:9f:e4:26:28:00",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.133",
+      "mac": "80:9f:e4:26:26:90",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.135",
+      "mac": "80:9f:e4:26:24:90",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.136",
+      "mac": "80:9f:e4:26:25:80",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "HTTP/1.1 302 Redirect"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.152",
+      "mac": "50:81:40:77:89:18",
+      "open_ports": [
+        {
+          "port": 135,
+          "service": "epmap",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 139,
+          "service": "netbios-ssn",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 445,
+          "service": "microsoft-ds",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.145",
+      "mac": "24:b2:b9:db:9f:0f",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.173",
+      "mac": "38:a7:46:38:37:d9",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.198",
+      "mac": "9c:7b:ef:48:4e:72",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.161",
+      "mac": "c0:35:32:50:84:0b",
+      "open_ports": [
+        {
+          "port": 135,
+          "service": "epmap",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 139,
+          "service": "netbios-ssn",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 445,
+          "service": "microsoft-ds",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.224",
+      "mac": "00:23:79:bc:a6:7c",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.248",
+      "mac": "00:23:79:bc:a6:4b",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.244",
+      "mac": "2a:63:d5:6a:5b:a6",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.217",
+      "mac": "e2:3d:5b:01:37:44",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.74",
+      "mac": "24:55:9a:43:6d:fe",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.88",
+      "mac": "ce:9b:e9:eb:12:96",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.85",
+      "mac": "50:92:92:6b:f2:a0",
+      "open_ports": [
+        {
+          "port": 135,
+          "service": "epmap",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 139,
+          "service": "netbios-ssn",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 445,
+          "service": "microsoft-ds",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.82",
+      "mac": "8c:8b:5b:a4:6b:48",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.69",
+      "mac": "1a:2a:86:45:04:31",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.98",
+      "mac": "bc:cd:99:31:c3:92",
+      "open_ports": [
+        {
+          "port": 135,
+          "service": "epmap",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 139,
+          "service": "epmap",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 445,
+          "service": "microsoft-ds",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.92",
+      "mac": "3c:c5:dd:03:85:11",
+      "open_ports": [
+        {
+          "port": 8443,
+          "service": "unknown",
+          "banner": "HTTP/1.1 404 Not Found"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.91",
+      "mac": "c8:3a:35:18:33:e8",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.104",
+      "mac": "74:a7:ea:cb:0b:a1",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.105",
+      "mac": "4c:5f:70:8c:92:59",
+      "open_ports": [
+        {
+          "port": 135,
+          "service": "epmap",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 139,
+          "service": "netbios-ssn",
+          "banner": "No banner returned"
+        },
+        {
+          "port": 445,
+          "service": "microsoft-ds",
+          "banner": "No banner returned"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.123",
+      "mac": "12:e6:02:a3:57:1e",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.138",
+      "mac": "d4:ab:61:7a:99:55",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.155",
+      "mac": "3a:23:23:f3:d6:0f",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.171",
+      "mac": "0e:7f:8b:65:aa:59",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.174",
+      "mac": "ce:19:da:17:bd:f8",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.169",
+      "mac": "22:af:41:ff:f5:6c",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.190",
+      "mac": "1c:70:c9:d7:76:9e",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.168",
+      "mac": "1c:bf:c0:5a:8c:d9",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.170",
+      "mac": "b0:b5:c3:1a:00:53",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.166",
+      "mac": "9c:67:d6:ea:4e:44",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.211",
+      "mac": "4c:6b:b8:28:9c:c4",
+      "open_ports": [
+        {
+          "port": 8443,
+          "service": "unknown",
+          "banner": "HTTP/1.1 404 Not Found"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.210",
+      "mac": "78:a7:c7:a9:92:75",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.232",
+      "mac": "68:7a:64:ec:c7:7d",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.237",
+      "mac": "a6:f7:fe:0f:11:9e",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.219",
+      "mac": "44:0f:b4:3b:c6:d0",
+      "open_ports": [
+        {
+          "port": 8443,
+          "service": "unknown",
+          "banner": "HTTP/1.1 404 Not Found"
+        }
+      ]
+    },
+    {
+      "ip": "192.168.1.228",
+      "mac": "e2:28:d5:87:4a:53",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.235",
+      "mac": "0e:2c:b0:ea:76:0f",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.238",
+      "mac": "82:75:e6:8e:26:2f",
+      "open_ports": []
+    },
+    {
+      "ip": "192.168.1.229",
+      "mac": "72:e9:a2:ec:aa:1e",
+      "open_ports": []
+    }
+  ]
+}
