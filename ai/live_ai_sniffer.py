@@ -81,8 +81,10 @@ def parse_tcp_header(data):
     flags = tcp_header[5]
     return tcp_header[0], tcp_header[1], (flags & 0x02) != 0, (flags & 0x04) != 0
 
-def start_live_monitoring(interface="eth1"):
-    print(f"[*] AI Real-Time Traffic Sniffer Active on [{interface}]... (Press Ctrl+C to stop)")
+def start_live_monitoring(interface="eth1", verbose_mode=False):
+    mode_title = "VERBOSE MODE (Detailed)" if verbose_mode else "SUMMARY MODE (Compact)"
+    print(f"[*] AI Real-Time Traffic Sniffer Active on [{interface}] | Mode: {mode_title}")
+    print("[*] Press Ctrl+C to stop.\n")
     
     try:
         raw_sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
@@ -93,14 +95,11 @@ def start_live_monitoring(interface="eth1"):
         return
 
     last_analysis_time = time.time()
-    total_raw_packets = 0
 
     try:
         while True:
             try:
                 raw_data, _ = raw_sock.recvfrom(65535)
-                total_raw_packets += 1
-                
                 dst_mac_bytes, src_mac_bytes, eth_protocol = struct.unpack('!6s6sH', raw_data[:14])
                 src_mac = format_mac(src_mac_bytes)
                 
@@ -146,6 +145,9 @@ def start_live_monitoring(interface="eth1"):
                 normal_count = 0
 
                 if traffic_stats:
+                    if verbose_mode:
+                        print(f"\n--- [{ts}] Detailed Traffic Report ---")
+
                     for ip, stats in list(traffic_stats.items()):
                         if stats['pkts'] < 1:
                             continue
@@ -169,21 +171,21 @@ def start_live_monitoring(interface="eth1"):
 
                         predictor.update_database(ip, status, score)
                         
-                        # Only show banner IF IT IS A THREAT
                         if status != "Normal":
                             threats_found += 1
                             pps = total_pkts / duration
                             print_ai_alert(ip, stats['mac'], status, score, pps=pps, syn_ratio=syn_ratio, ports=stats['ports'])
                         else:
                             normal_count += 1
+                            if verbose_mode:
+                                print(f"  🟢 IP: {ip:<15} | MAC: {stats['mac']} | Packets: {int(total_pkts):<4} | Status: Normal (99%)")
 
-                # Clean summary log line instead of 30 lines of spam
-                if threats_found == 0:
+                # Summary Line for Normal traffic in Summary mode
+                if not verbose_mode and threats_found == 0:
                     print(f"[{ts}] 🛡️  Sniffing active... Monitored {normal_count} LAN devices | All Status: SAFE (Normal)")
 
                 # Reset window
                 traffic_stats.clear()
-                total_raw_packets = 0
                 last_analysis_time = time.time()
 
     except KeyboardInterrupt:
@@ -192,4 +194,12 @@ def start_live_monitoring(interface="eth1"):
 
 if __name__ == "__main__":
     iface = sys.argv[1] if len(sys.argv) > 1 else "eth1"
-    start_live_monitoring(iface)
+    
+    print("\nSelect Monitoring Display Mode:")
+    print("1) Summary Mode  (Default: 1-line status when clear, alerts on threat)")
+    print("2) Full Details  (Verbose: Lists every active IP with stats)")
+    
+    choice = input("\nEnter Choice [1/2] (Default 1): ").strip()
+    is_verbose = True if choice == "2" else False
+
+    start_live_monitoring(iface, verbose_mode=is_verbose)
