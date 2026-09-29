@@ -25,6 +25,21 @@ from enrichment import run_cpp_scanner, load_vendor_db, enrich_device
 
 DB_PATH = "devices.db"
 
+def update_device_ai_status(db_path: str, ip: str, ai_status: str, threat_score: float):
+    """Updates the AI threat status and score for a given device IP in devices.db."""
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        UPDATE devices 
+        SET ai_status = ?, threat_score = ?
+        WHERE ip = ?
+    """, (ai_status, threat_score, ip))
+    
+    conn.commit()
+    conn.close()
+    print(f"[+] Updated DB for {ip}: Status={ai_status}, Threat Score={threat_score}")
+
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)

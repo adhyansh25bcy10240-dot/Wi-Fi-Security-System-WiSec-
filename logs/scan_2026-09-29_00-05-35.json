@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-09-29 00:05:35",
+  "scanned_hosts": 1,
+  "results": [
+    {
+      "ip": "192.168.1.3",
+      "mac": "f8:20:97:1d:32:3e",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "banner": "No banner returned"
+        }
+      ]
+    }
+  ]
+}
