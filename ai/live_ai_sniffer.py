@@ -65,6 +65,7 @@ traffic_stats = collections.defaultdict(lambda: {
     'pkts': 0,
     'syn_count': 0,
     'rst_count': 0,
+    'arp_count': 0,
     'ports': set(),
     'bytes': 0,
     'start_time': time.time()
@@ -73,8 +74,11 @@ traffic_stats = collections.defaultdict(lambda: {
 predictor = ThreatPredictor()
 
 def parse_ip_header(data):
+    # Extract version and Internet Header Length (IHL)
+    version_ihl = data[0]
+    ihl = (version_ihl & 0x0F) * 4  # Dynamic IP Header Size
     ip_header = struct.unpack('!BBHHHBBH4s4s', data[:20])
-    return socket.inet_ntoa(ip_header[8]), socket.inet_ntoa(ip_header[9]), ip_header[6]
+    return socket.inet_ntoa(ip_header[8]), socket.inet_ntoa(ip_header[9]), ip_header[6], ihl
 
 def parse_tcp_header(data):
     tcp_header = struct.unpack('!HHLLBBHHH', data[:20])
@@ -112,11 +116,12 @@ def start_live_monitoring(interface="eth1", verbose_mode=False):
                             stats = traffic_stats[sender_ip]
                             stats['mac'] = src_mac
                             stats['pkts'] += 1
+                            stats['arp_count'] += 1
 
                 # IPv4 (0x0800)
                 elif eth_protocol == 0x0800:
                     ip_payload = raw_data[14:]
-                    src_ip, dst_ip, proto = parse_ip_header(ip_payload)
+                    src_ip, dst_ip, proto, ip_hdr_len = parse_ip_header(ip_payload)
                     
                     if is_local_ip(src_ip):
                         stats = traffic_stats[src_ip]
@@ -125,12 +130,15 @@ def start_live_monitoring(interface="eth1", verbose_mode=False):
                         stats['bytes'] += len(raw_data)
                         
                         if proto == 6: # TCP
-                            tcp_payload = ip_payload[20:]
+                            # Dynamic IP header offset parsing
+                            tcp_payload = ip_payload[ip_hdr_len:]
                             if len(tcp_payload) >= 20:
                                 src_port, dst_port, is_syn, is_rst = parse_tcp_header(tcp_payload)
                                 stats['ports'].add(dst_port)
-                                if is_syn: stats['syn_count'] += 1
-                                if is_rst: stats['rst_count'] += 1
+                                if is_syn: 
+                                    stats['syn_count'] += 1
+                                if is_rst: 
+                                    stats['rst_count'] += 1
 
             except socket.timeout:
                 pass
@@ -159,8 +167,8 @@ def start_live_monitoring(interface="eth1", verbose_mode=False):
                         avg_pkt_size = float(stats['bytes']) / total_pkts if total_pkts > 0 else 0.0
                         unique_ports = float(len(stats['ports']))
 
-                        # Guardrail: 0 ports hit & 0 SYN = Normal
-                        if unique_ports == 0 and stats['syn_count'] == 0:
+                        # Guardrail: 0 ports hit, 0 SYN & 0 ARP = Normal
+                        if unique_ports == 0 and stats['syn_count'] == 0 and stats['arp_count'] == 0:
                             status, score = "Normal", 0.99
                         else:
                             feature_vector = [
@@ -169,6 +177,28 @@ def start_live_monitoring(interface="eth1", verbose_mode=False):
                             ]
                             status, score = predictor.predict_vector(feature_vector)
 
+                            # -------------------------------------------------------------
+                            # CALIBRATED HEURISTIC OVERRIDES: Priority Detection
+                            # -------------------------------------------------------------
+                            # -------------------------------------------------------------
+                            # CALIBRATED HEURISTIC OVERRIDES: Distinct Multi-Vector Logic
+                            # -------------------------------------------------------------
+                            pps = total_pkts / duration
+                            arp_pkts = stats['arp_count']
+
+                            # Order 1: ARP Spoofing (Only if ARP traffic exists)
+                            if arp_pkts >= 10:
+                                status = "ARP_Spoofing"
+                                score = 0.99
+                            # Order 2: DoS SYN Flood (High PPS / High SYN count on few ports)
+                            elif (pps >= 80 or stats['syn_count'] >= 100) and unique_ports <= 3:
+                                status = "DoS_SYN"
+                                score = 0.99
+                            # Order 3: PortScan (Probing multiple unique ports)
+                            elif unique_ports >= 10:
+                                status = "PortScan"
+                                score = 0.99
+                                
                         predictor.update_database(ip, status, score)
                         
                         if status != "Normal":
