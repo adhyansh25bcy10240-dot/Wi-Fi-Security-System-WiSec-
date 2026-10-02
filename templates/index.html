@@ -1,213 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <title>WiSec Network Monitor</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiSec | AI Network Monitor</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-            background: #f5f5f5;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        .controls {
-            margin-bottom: 25px;
-        }
-
-        button {
-            padding: 9px 14px;
-            cursor: pointer;
-        }
-
-        .rescan-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            font-weight: bold;
-        }
-
-        .dashboard {
-            background: white;
-            padding: 15px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-        }
-
-        .dashboard img {
-            width: 100%;
-            max-width: 1400px;
-            height: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        th, td {
-            border: 1px solid #999;
-            padding: 9px;
-            text-align: left;
-        }
-
-        .online {
-            color: green;
-            font-weight: bold;
-        }
-
-        .offline {
-            color: red;
-            font-weight: bold;
-        }
-
+        /* Custom scrollbar for the alert log */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
-
 </head>
+<body class="bg-gray-900 text-gray-100 font-sans p-6 h-screen flex flex-col">
 
-<body>
+    <!-- HEADER & SYSTEM STATUS -->
+    <header class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-white">WiSec <span class="text-blue-500">AI Scanner</span></h1>
+            <p class="text-gray-400 text-sm mt-1">Live Packet Sniffing & Threat Detection</p>
+        </div>
+        <div id="system-badge" class="px-4 py-2 rounded-full font-bold text-sm bg-gray-800 border border-gray-600">
+            CONNECTING...
+        </div>
+    </header>
 
-    <h1>WiSec Live Dashboard</h1>
-
-
-    <!-- ===================== CONTROLS ===================== -->
-
-    <div class="controls">
-
-        <form action="/rescan" method="POST">
-
-            <button
-                type="submit"
-                class="rescan-button"
-            >
-                🔄 Force Network Rescan
-            </button>
-
-        </form>
-
+    <!-- TOP SUMMARY CARDS -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow-lg">
+            <h3 class="text-gray-400 text-xs font-semibold uppercase">Total Discovered</h3>
+            <p id="total-devices" class="text-3xl font-bold text-white mt-2">0</p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow-lg">
+            <h3 class="text-gray-400 text-xs font-semibold uppercase">Active Online</h3>
+            <p id="active-devices" class="text-3xl font-bold text-green-400 mt-2">0</p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded-lg border border-red-900 shadow-lg relative overflow-hidden">
+            <div class="absolute inset-0 bg-red-500 opacity-10 animate-pulse"></div>
+            <h3 class="text-gray-400 text-xs font-semibold uppercase relative z-10">Active AI Threats</h3>
+            <p id="threats-detected" class="text-3xl font-bold text-red-500 mt-2 relative z-10">0</p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow-lg">
+            <h3 class="text-gray-400 text-xs font-semibold uppercase">Network Health</h3>
+            <p id="network-health" class="text-xl font-bold text-white mt-3 truncate">UNKNOWN</p>
+        </div>
     </div>
 
+    <!-- MAIN DASHBOARD AREA (Table + Sidebar) -->
+    <div class="flex gap-6 flex-grow overflow-hidden">
+        
+        <!-- NETWORK ASSETS TABLE (Left: 70%) -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg flex-grow flex flex-col overflow-hidden shadow-lg w-2/3">
+            <div class="p-4 border-b border-gray-700 bg-gray-800 z-10">
+                <h2 class="text-lg font-bold">Network Assets</h2>
+            </div>
+            <div class="overflow-y-auto flex-grow">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="uppercase tracking-wider text-xs text-gray-400 bg-gray-900 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-3 font-medium">IP Address</th>
+                            <th class="px-4 py-3 font-medium">MAC & Vendor</th>
+                            <th class="px-4 py-3 font-medium">Open Ports</th>
+                            <th class="px-4 py-3 font-medium">AI Security Status</th>
+                            <th class="px-4 py-3 font-medium text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="device-table-body" class="divide-y divide-gray-700">
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <!-- ===================== VISUALIZATION ===================== -->
-
-    {% if dashboard_image %}
-
-    <div class="dashboard">
-
-        <h2>Network Analytics</h2>
-
-        <img
-            src="{{ url_for('static', filename=dashboard_image) }}"
-            alt="WiSec Network Visualization"
-        >
-
+        <!-- LIVE ALERT LOG (Right: 30%) -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg w-1/3 flex flex-col overflow-hidden shadow-lg">
+            <div class="p-4 border-b border-gray-700 bg-gray-800 z-10 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Live Security Log
+                </h2>
+                <button onclick="document.getElementById('alert-log').innerHTML=''" class="text-xs text-gray-500 hover:text-white">Clear</button>
+            </div>
+            <div id="alert-log" class="p-4 overflow-y-auto flex-grow font-mono text-xs space-y-3 scrollbar-hide bg-gray-900 inset-shadow">
+                <!-- Alerts populated by JS -->
+            </div>
+        </div>
     </div>
 
-    {% endif %}
+    <script>
+        // Store existing alerts to prevent duplicate log spam
+        const loggedAlerts = new Set();
 
+        function getStatusBadge(aiStatus) {
+            if (aiStatus === 'Normal') {
+                return `<span class="px-2 py-1 bg-green-900/50 text-green-400 border border-green-700 rounded-md text-xs font-semibold">NORMAL</span>`;
+            } else if (aiStatus === 'PortScan') {
+                return `<span class="px-2 py-1 bg-orange-900/50 text-orange-400 border border-orange-700 rounded-md text-xs font-semibold">PORT SCAN</span>`;
+            } else {
+                return `<span class="px-2 py-1 bg-red-900/50 text-red-400 border border-red-700 rounded-md text-xs font-semibold animate-pulse">${aiStatus.toUpperCase().replace('_', ' ')}</span>`;
+            }
+        }
 
-    <!-- ===================== DEVICE TABLE ===================== -->
+        async function fetchNetworkData() {
+            try {
+                // Ensure your app.py is returning the JSON payload at this endpoint
+                const response = await fetch('/api/devices');
+                const data = await response.json();
 
-    <h2>Connected Devices</h2>
+                // 1. Update Summary Cards
+                document.getElementById('total-devices').innerText = data.summary.total_devices;
+                document.getElementById('active-devices').innerText = data.summary.active_devices;
+                document.getElementById('threats-detected').innerText = data.summary.threats_detected;
+                
+                const healthEl = document.getElementById('network-health');
+                healthEl.innerText = data.summary.network_health.replace('_', ' ');
+                healthEl.className = data.summary.network_health === 'ATTENTION_REQUIRED' 
+                    ? 'text-xl font-bold mt-3 truncate text-red-500' 
+                    : 'text-xl font-bold mt-3 truncate text-green-400';
 
-    <table>
+                const badgeEl = document.getElementById('system-badge');
+                if (data.summary.threats_detected > 0) {
+                    badgeEl.className = "px-4 py-2 rounded-full font-bold text-xs bg-red-900/30 text-red-500 border border-red-700 animate-pulse";
+                    badgeEl.innerText = "THREATS DETECTED";
+                } else {
+                    badgeEl.className = "px-4 py-2 rounded-full font-bold text-xs bg-green-900/30 text-green-400 border border-green-700";
+                    badgeEl.innerText = "SYSTEM SECURE";
+                }
 
-        <tr>
+                // 2. Update Table & Process Alerts
+                const tbody = document.getElementById('device-table-body');
+                const log = document.getElementById('alert-log');
+                tbody.innerHTML = ''; // Clear table for redraw
 
-            <th>Status</th>
-            <th>IP Address</th>
-            <th>MAC Address</th>
-            <th>Vendor</th>
-            <th>Type</th>
-            <th>Actions</th>
+                data.devices.forEach(device => {
+                    const ai = device.ai_security;
+                    const ports = device.open_ports.map(p => p.port).join(', ') || 'None';
+                    const isBlocked = ai.is_blocked ? 'checked' : '';
 
-        </tr>
+                    // Generate Table Row
+                    const row = `
+                        <tr class="hover:bg-gray-700/50 transition-colors">
+                            <td class="px-4 py-3">
+                                <div class="font-bold text-white">${device.ip}</div>
+                                <div class="text-xs text-gray-400">${device.hostname}</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-mono text-xs text-gray-300">${device.mac}</div>
+                                <div class="text-xs text-gray-500 truncate max-w-[150px]">${device.vendor}</div>
+                            </td>
+                            <td class="px-4 py-3 text-gray-300 font-mono text-xs">${ports}</td>
+                            <td class="px-4 py-3">${getStatusBadge(ai.status)}</td>
+                            <td class="px-4 py-3 text-right space-x-2">
+                                <button onclick="scanPorts('${device.ip}')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded transition">Scan</button>
+                                <button class="text-xs ${ai.is_blocked ? 'bg-red-900 text-red-400 border border-red-700' : 'bg-gray-700 text-white hover:bg-gray-600'} px-3 py-1 rounded transition">
+                                    ${ai.is_blocked ? 'Isolated' : 'Block'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
 
+                    // 3. Process Live Alerts
+                    if (ai.threat_score > 0.70) {
+                        const alertId = `${device.ip}-${ai.status}-${device.last_seen}`;
+                        if (!loggedAlerts.has(alertId)) {
+                            loggedAlerts.add(alertId);
+                            const time = new Date().toLocaleTimeString();
+                            const logEntry = `
+                                <div class="p-3 bg-red-900/20 border-l-4 border-red-500 rounded">
+                                    <div class="flex justify-between text-red-400 mb-1">
+                                        <span class="font-bold">[${time}] ${ai.status}</span>
+                                        <span>Score: ${(ai.threat_score * 100).toFixed(0)}%</span>
+                                    </div>
+                                    <p class="text-gray-300">Host <span class="font-bold text-white">${device.ip}</span> flagged.</p>
+                                    <p class="text-gray-400 mt-1">${ai.alert_message}</p>
+                                </div>
+                            `;
+                            log.insertAdjacentHTML('afterbegin', logEntry);
+                        }
+                    }
+                });
 
-        {% for device in devices %}
+            } catch (error) {
+                console.error("Failed to fetch network data:", error);
+                document.getElementById('system-badge').innerText = "CONNECTION LOST";
+                document.getElementById('system-badge').className = "px-4 py-2 rounded-full font-bold text-xs bg-yellow-900/30 text-yellow-500 border border-yellow-700";
+            }
+        }
 
-        <tr>
+        // Action placeholder functions for your buttons
+        function scanPorts(ip) {
+            alert(`Initiating aggressive port scan on ${ip}...\n(Backend integration required)`);
+        }
 
-            <td>
-
-                {% if device['is_online'] %}
-
-                    <span class="online">
-                        🟢 Online
-                    </span>
-
-                {% else %}
-
-                    <span class="offline">
-                        🔴 Offline
-                    </span>
-
-                {% endif %}
-
-            </td>
-
-
-            <td>
-                {{ device['ip'] }}
-            </td>
-
-
-            <td>
-                {{ device['mac'] }}
-            </td>
-
-
-            <td>
-                {{ device['vendor'] }}
-            </td>
-
-
-            <td>
-                {{ device['device_type'] }}
-            </td>
-
-
-            <td>
-
-                <form
-                    action="/portscan"
-                    method="POST"
-                    style="margin: 0;"
-                >
-
-                    <input
-                        type="hidden"
-                        name="ip"
-                        value="{{ device['ip'] }}"
-                    >
-
-                    <button type="submit">
-                        🔍 Scan Ports
-                    </button>
-
-                </form>
-
-            </td>
-
-        </tr>
-
-        {% endfor %}
-
-    </table>
-
+        // Poll the API every 3 seconds
+        setInterval(fetchNetworkData, 3000);
+        
+        // Initial fetch on load
+        fetchNetworkData();
+    </script>
 </body>
-
 </html>
