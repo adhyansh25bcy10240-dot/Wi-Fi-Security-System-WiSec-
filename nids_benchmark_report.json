@@ -1,0 +1,37 @@
+{
+    "metadata": {
+        "timestamp": "2026-10-02T21:54:00.217145",
+        "evaluation_type": "Empirical Dynamic Dataset Benchmark",
+        "total_samples_evaluated": 80
+    },
+    "performance": {
+        "overall_accuracy": 100.0,
+        "avg_inference_latency_ms": 0.0467
+    },
+    "class_metrics": {
+        "Normal": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "sample_count": 20
+        },
+        "PortScan": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "sample_count": 20
+        },
+        "DoS_SYN": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "sample_count": 20
+        },
+        "ARP_Spoofing": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0,
+            "sample_count": 20
+        }
+    }
+}
