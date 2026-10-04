@@ -1,12 +1,12 @@
 {
     "metadata": {
-        "timestamp": "2026-10-02T21:54:00.217145",
+        "timestamp": "2026-10-04T19:56:19.728644",
         "evaluation_type": "Empirical Dynamic Dataset Benchmark",
         "total_samples_evaluated": 80
     },
     "performance": {
         "overall_accuracy": 100.0,
-        "avg_inference_latency_ms": 0.0467
+        "avg_inference_latency_ms": 0.3729
     },
     "class_metrics": {
         "Normal": {

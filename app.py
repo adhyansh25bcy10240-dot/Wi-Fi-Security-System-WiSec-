@@ -1,97 +1,82 @@
-from flask import Flask, render_template, request, redirect, url_for
+import os
+import sys
 import sqlite3
 import subprocess
-import sys
-import os
-
-import visualization
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "devices.db")
 
-
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
+try:
+    import visualization
+except ImportError:
+    visualization = None
+
+@app.route('/api/devices', methods=['GET'])
+def api_devices():
+    try:
+        conn = get_db_connection()
+        devices_raw = conn.execute('SELECT * FROM devices').fetchall()
+        conn.close()
+
+        device_list = []
+        threats_count = 0
+
+        for row in devices_raw:
+            d = dict(row)
+            raw_ports = d.get('open_ports') or ""
+            ports_array = [{"port": int(p.strip())} for p in raw_ports.split(",") if p.strip().isdigit()]
+
+            status = d.get('status', 'Normal')
+            threat_score = float(d.get('threat_score', 0.0))
+
+            if status != 'Normal' or threat_score > 0.70:
+                threats_count += 1
+
+            device_list.append({
+                "ip": d.get('ip', 'Unknown'),
+                "mac": d.get('mac', '00:00:00:00:00:00'),
+                "hostname": d.get('hostname', 'Unknown Device'),
+                "vendor": d.get('vendor', 'Generic Vendor'),
+                "open_ports": ports_array,
+                "last_seen": d.get('last_seen', ''),
+                "ai_security": {
+                    "status": status,
+                    "threat_score": threat_score,
+                    "is_blocked": bool(d.get('is_blocked', 0)),
+                    "alert_message": f"Suspicious activity detected: {status}" if status != 'Normal' else "Clean traffic"
+                }
+            })
+
+        dashboard_img = visualization.generate_dashboard() if visualization else None
+
+        return jsonify({
+            "summary": {
+                "total_devices": len(device_list),
+                "active_devices": len(device_list),
+                "threats_detected": threats_count,
+                "network_health": "ATTENTION_REQUIRED" if threats_count > 0 else "HEALTHY"
+            },
+            "devices": device_list,
+            "dashboard_image": dashboard_img
+        })
+
+    except Exception as e:
+        print(f"[!] API Error: {e}")
+        return jsonify({"summary": {"total_devices": 0, "active_devices": 0, "threats_detected": 0, "network_health": "ERROR"}, "devices": []}), 500
+
 
 @app.route('/')
 def index():
-
-    conn = get_db_connection()
-
-    devices = conn.execute(
-        'SELECT * FROM devices'
-    ).fetchall()
-
-    conn.close()
-
-    # Generate/update visualization
-    dashboard_image = visualization.generate_dashboard()
-
-    return render_template(
-        'index.html',
-        devices=devices,
-        dashboard_image=dashboard_image
-    )
-
-
-# ===================== NETWORK RESCAN =====================
-
-@app.route('/rescan', methods=['POST'])
-def rescan():
-
-    try:
-
-        subprocess.run(
-            [sys.executable, 'history_tracker.py'],
-            cwd=BASE_DIR,
-            check=True
-        )
-
-    except subprocess.CalledProcessError as e:
-
-        print("[!] Network rescan failed:", e)
-
-    return redirect(url_for('index'))
-
-
-# ===================== PORT SCAN =====================
-
-@app.route('/portscan', methods=['POST'])
-def portscan():
-
-    target_ip = request.form.get('ip')
-
-    if target_ip:
-
-        try:
-
-            subprocess.run(
-                [
-                    sys.executable,
-                    'port_scan_menu.py',
-                    target_ip
-                ],
-                cwd=BASE_DIR
-            )
-
-        except Exception as e:
-
-            print("[!] Port scan failed:", e)
-
-    return redirect(url_for('index'))
-
-
-# ===================== RUN =====================
+    dashboard_img = visualization.generate_dashboard() if visualization else None
+    return render_template('index.html', dashboard_image=dashboard_img)
 
 if __name__ == '__main__':
-
-    app.run(
-        host='0.0.0.0',
-        port=3001,
-        debug=True
-    )
+    app.run(host='0.0.0.0', port=3001, debug=True)

@@ -1,13 +1,10 @@
 version: '3.8'
-
 networks:
-  nids_bridge:
+  nids_net:
     driver: bridge
     ipam:
       config:
         - subnet: 10.5.0.0/24
-          gateway: 10.5.0.1
-
 services:
   target_server:
     image: nginx:alpine
